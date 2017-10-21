@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TbOrderMapper">
+	 
+	
+		<!-- 新增-->
+	<insert id="save" parameterType="pd"  keyProperty="F_ORDER_UID" useGeneratedKeys="true">
+		    
+		insert into tb_order (
+							      F_OrderSeries,  
+							      F_USER_ID,  
+							      F_PRODUCT_ID,
+							      F_SKU,  
+							      F_SinglePrice,  
+							      F_BuyCount,  
+							      F_Cost,  
+							      F_Message,  
+							      F_Status,  
+							      F_ADDRESS_UID,
+							      F_PRODUCT_ATTR,
+					          CREATE_DATE
+		) values (
+							       #{F_OrderSeries},  
+							       #{F_USER_ID},  
+							       #{F_PRODUCT_ID}, 
+							       #{F_SKU}, 
+							       #{F_SinglePrice},  
+							       #{F_BuyCount},  
+							       #{F_Cost},  
+							       #{F_Message},  
+							       #{F_Status},  
+							       #{F_ADDRESS_UID},
+							       #{f_product_attr},
+					             #{CREATE_DATE}
+		)
+		
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="F_ORDER_UID">
+	          SELECT LAST_INSERT_ID() AS id
+	    </selectKey>
+	    
+	</insert>
+	 
+	 
+    <!-- datalistPage -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		 select
+					      a.F_OrderSeries,  
+					      a.F_USER_ID,  
+					      a.F_PRODUCT_ID,  
+					      a.F_SinglePrice,  
+					      a.F_BuyCount,  
+					      a.F_Cost,  
+					      a.F_Message,  
+					      a.F_Status,  
+					      (select F_REAL_PRICE from tb_product tp where tp.F_PRODUCT_ID = a.F_PRODUCT_ID) as F_REAL_PRICE,  
+					      (select F_Price from tb_product tp where tp.F_PRODUCT_ID = a.F_PRODUCT_ID) as F_Price, 
+					      (select F_ProductName from tb_product tp where tp.F_PRODUCT_ID = a.F_PRODUCT_ID) as F_ProductName, 
+					      (select F_ProductDesc from tb_product tp where tp.F_PRODUCT_ID = a.F_PRODUCT_ID) as F_ProductDesc,
+			             date_format(a.CREATE_DATE,'%Y-%c-%d %h:%i:%s') as CREATE_DATE,
+			             (select PATH From tb_pictures tbpictures where tbpictures.TABLE_UID_VALUE = a.F_PRODUCT_ID limit 0,1) AS F_PATH,
+				a.F_ORDER_UID
+		from 
+				tb_order a where F_USER_ID = #{pd.F_USER_ID,jdbcType=VARCHAR} 
+				<if test="pd.F_Status !=null and pd.F_Status !=''">  
+                       AND F_Status = #{pd.F_Status}  
+                </if>
+	</select>
+	
+	 
+	 	<!--findById -->
+	<select id="findById" parameterType="pd" resultType="pd">
+	
+	SELECT
+					      tbOrder.F_OrderSeries,  
+					      tbOrder.F_USER_ID,  
+					      tbOrder.F_PRODUCT_ID,  
+					      tbOrder.F_SinglePrice,  
+					      tbOrder.F_BuyCount,  
+					      tbOrder.F_Cost,  
+					      tbOrder.F_Message,  
+					      tbOrder.F_Status,  
+			             date_format(tbOrder.CREATE_DATE,'%Y-%c-%d %h:%i:%s') as CREATE_DATE,
+				tbOrder.F_ORDER_UID,
+	(select PATH From tb_pictures tbpictures where tbpictures.TABLE_UID_VALUE = tbOrder.F_ORDER_UID limit 0,1) AS PATH
+FROM
+	tb_order tbOrder
+WHERE  F_ORDER_UID = #{F_ORDER_UID}
+	 
+	</select>
+	
+	
+	<!-- �޸� -->
+	<update id="edit" parameterType="pd">
+		update  tb_order
+			<set>
+			    <if test="F_OrderSeries!=null and F_OrderSeries!='' ">
+		            F_OrderSeries = #{F_OrderSeries},
+		        </if>
+		          <if test="F_USER_ID!=null and F_USER_ID!='' ">
+		            F_USER_ID = #{F_USER_ID},
+		        </if>
+		          <if test="F_PRODUCT_ID!=null and F_PRODUCT_ID!='' ">
+		              F_PRODUCT_ID = #{F_PRODUCT_ID},
+		        </if>
+		          <if test="F_SinglePrice!=null and F_SinglePrice!='' ">
+		            F_SinglePrice = #{F_SinglePrice},
+		        </if>
+		          <if test="F_BuyCount!=null and F_BuyCount!='' ">
+		             F_BuyCount = #{F_BuyCount},
+		        </if>
+		          <if test="F_Cost!=null and F_Cost!='' ">
+		             F_Cost = #{F_Cost},
+		        </if>
+		          <if test="F_Message!=null and F_Message!='' ">
+		            F_Message = #{F_Message},
+		        </if>
+		          <if test="F_Status!=null and F_Status!='' ">
+		             F_Status = #{F_Status},
+		        </if>
+		          <if test="CREATE_DATE!=null and CREATE_DATE!='' ">
+		              CREATE_DATE = #{CREATE_DATE},
+		        </if>       
+		   </set>  
+		     where 
+			    F_ORDER_UID = #{ F_ORDER_UID}
+				 
+	</update>
+	
+    <!-- ɾ��-->
+	<delete id="delete" parameterType="pd">
+		delete from  tb_order
+		where 
+			F_ORDER_UID = #{ F_ORDER_UID}
+	</delete>
+	
+	
+ 
+	
+</mapper>

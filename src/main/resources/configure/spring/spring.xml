@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:p="http://www.springframework.org/schema/p"  
+    xmlns:tx="http://www.springframework.org/schema/tx" 
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:mvc="http://www.springframework.org/schema/mvc"  
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+    http://www.springframework.org/schema/util  
+    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+          
+    <!-- 扫描 -->
+    <context:component-scan base-package="com.lanbao"/> 
+    <context:component-scan base-package="com.jiuji.cn"/> 
+  
+  	<!-- 启用注解 -->
+	<context:annotation-config />
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+         
+   <!-- 载入配置文件 -->
+   <util:properties id="commConfig" location="classpath:CommConfig.properties"/>
+   
+    <!-- 启动组件扫描，排除@Controller组件，该组件由SpringMVC配置文件扫描 -->
+	<context:component-scan base-package="com.lanbao,com.jiuji.cn,com.jiuji.cn.business">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	
+    
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"> 
+      <property name="locations"> 
+       <list>  
+          <value>classpath:configure/jdbc/dbconfig.properties</value> 
+          <value>classpath:configure/hibernate/hibernate.properties</value>  
+          <value>classpath:configure/redis/redis.properties</value>  
+          <value>classpath:configure/mongodb/mongodb.properties</value>   
+        </list> 
+      </property>  
+    </bean> 
+    
+     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+       <property name="driverClassName" value="${driverClassName}"/>
+       <property name="url" value="${dburl}"/>
+       <property name="username" value="${username}"/>
+       <property name="password" value="${password}"/>
+       <property name="initialSize" value="${initialSize}"/>
+       <property name="maxActive" value="${maxActive}"/>
+       <property name="maxIdle" value="${maxIdle}"/>
+       <property name="minIdle" value="${minIdle}"/>
+       <property name="maxWait" value="${maxWait}"/> 
+    </bean>   
+    
+  
+    <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx   -->
+   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+       <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    
+   
+    <aop:config>
+        <aop:advisor pointcut="execution(* com.jiuji.cn.business.*.service.impl.*.*(..))" advice-ref="transactionAdvice" />
+    </aop:config>
+    
+   
+   <tx:advice id="transactionAdvice" transaction-manager="transactionManager"> 
+		<tx:attributes> 
+		<tx:method name="add*" propagation="REQUIRED"/> 
+		<tx:method name="append*" propagation="REQUIRED"/> 
+		<tx:method name="insert*" propagation="REQUIRED"/> 
+		<tx:method name="save*" propagation="REQUIRED"/> 
+		<tx:method name="update*" propagation="REQUIRED"/> 
+		<tx:method name="modify*" propagation="REQUIRED"/> 
+		<tx:method name="edit*" propagation="REQUIRED"/>
+		<tx:method name="delete*" propagation="REQUIRED"/>
+		<tx:method name="remove*" propagation="REQUIRED"/> 
+		<tx:method name="repair" propagation="REQUIRED"/> 
+		<tx:method name="delAndRepair" propagation="REQUIRED"/> 
+		<tx:method name="get*" propagation="SUPPORTS" read-only="true"/> 
+		<tx:method name="find*" propagation="SUPPORTS"/> 
+		<tx:method name="load*" propagation="SUPPORTS"/> 
+		<tx:method name="search*" propagation="SUPPORTS"/> 
+		<tx:method name="datagrid*" propagation="SUPPORTS"/> 
+		<tx:method name="*" propagation="SUPPORTS"/> 
+		</tx:attributes>
+	</tx:advice>   
+	
+	
+    
+    <!-- logger 将日志切面类的完整路径配置进来-->  
+   <!--  <bean id="logger" class="cn.lanbao.com.utils.log.Logger">  </bean>
+    
+    <aop:config> 
+	 	  <aop:aspect id="loggerAspect" ref="logger" order="1">   
+	      <aop:pointcut id="loggerPointcut" expression="execution(* com.jiuji.cn.controller..*.*(..))" />   
+	      <aop:around method="record" pointcut-ref="loggerPointcut" />  
+	    </aop:aspect> 
+	</aop:config>   -->
+	
+
+ <import resource="classpath:configure/ehcache/ehcache.xml"/>  
+ <import resource="classpath:configure/mybatis/mybatis.xml"/>      
+ <import resource="classpath:configure/redis/redis.xml"/>  
+<!--  <import resource="classpath:/configure/mongodb/mongodb.xml"/>  --> 
+  <import resource="classpath:configure/hibernate/hibernate.xml"/>    
+ <!--  <import resource="classpath:configure/shiro/shiro-config.xml"/>  -->
+  <import resource="classpath:configure/activiti/activiti.xml"/> 
+   <import resource="classpath:configure/dubbo/dubbo-server.xml"/> 	 
+</beans>    

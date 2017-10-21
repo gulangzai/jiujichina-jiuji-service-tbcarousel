@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="TbUserMapper" >
+
+ 
+  
+  <sql id="Base_Column_List" > 
+     F_USER_ID,F_UserName,F_Email,F_Mobile,F_Password,F_Deleted,F_OPEN_ID
+  </sql>
+  
+  
+    <select id="registerSelect" parameterType="pd" resultType="pd">
+      select 
+         <include refid="Base_Column_List" />
+      from tb_user
+      <where>
+		<if test="F_UserName !=null and F_UserName != ''">  
+	     	 AND F_UserName =  #{F_UserName,jdbcType=VARCHAR} 
+		</if>
+		<if test="F_UserName !=null and F_UserName != ''">  
+	     	 AND F_UserName =  #{F_UserName,jdbcType=VARCHAR} 
+		</if>
+		<if test="F_Mobile !=null and F_Mobile != ''">  
+	     	 AND F_Mobile =  #{F_Mobile,jdbcType=VARCHAR} 
+		</if> 
+		
+		AND F_Deleted = 1
+		
+      </where>
+        
+   </select>
+   
+  <select id="registerSelectF_UserName" parameterType="pd" resultType="pd">
+      select 
+         <include refid="Base_Column_List" />
+      from tb_user
+      <where>
+		<if test="F_UserName !=null and F_UserName != ''">  
+	     	 AND F_UserName =  #{F_UserName,jdbcType=VARCHAR} 
+		</if>
+      </where>
+       AND F_Deleted = 1
+   </select>
+   
+    <select id="registerSelectF_Mobile" parameterType="pd" resultType="pd">
+      select 
+         <include refid="Base_Column_List" />
+      from tb_user
+      <where> 
+		<if test="F_Mobile !=null and F_Mobile != ''">  
+	     	 AND F_Mobile =  #{F_Mobile,jdbcType=VARCHAR} 
+		</if>  
+      </where>
+       AND F_Deleted = 1
+   </select>
+   
+    <select id="registerSelectF_Email" parameterType="pd" resultType="pd">
+      select 
+         <include refid="Base_Column_List" />
+      from tb_user
+      <where>  
+		<if test="F_Email !=null and F_Email != ''">  
+	     	 AND F_Email =  #{F_Email,jdbcType=VARCHAR} 
+		</if> 
+      </where>
+       AND F_Deleted = 1
+   </select>
+   
+   
+   
+   <select id="select" parameterType="pd" resultType="pd">
+      select 
+         <include refid="Base_Column_List" />
+      from tb_user
+      <where> 
+          1 = 1 
+		<if test="F_UserName !=null and F_UserName != ''">  
+	     	 AND F_UserName =  #{F_UserName,jdbcType=VARCHAR} 
+		</if> 
+		<if test="F_Mobile !=null and F_Mobile != ''">  
+	     	 AND F_Mobile =  #{F_Mobile,jdbcType=VARCHAR} 
+		</if> 
+		<if test="F_Email !=null and F_Email != ''">  
+	     	 AND F_Email =  #{F_Email,jdbcType=VARCHAR} 
+		</if> 
+		<if test="F_Password !=null and F_Password != ''">  
+	     	  AND F_Password =  #{F_Password,jdbcType=VARCHAR}  
+		</if> 
+		<if test="F_OPEN_ID !=null and F_OPEN_ID != ''">  
+	     	  AND F_OPEN_ID =  #{F_OPEN_ID,jdbcType=VARCHAR}  
+		</if>  
+		 AND F_Deleted = 1
+		  
+     </where>
+   
+   </select>
+   
+     <select id="selectOnlyone" parameterType="pd" resultType="pd">
+     select 
+        <include refid="Base_Column_List" />
+     from tb_user  
+     	 where F_Password =  #{F_Password,jdbcType=VARCHAR}  
+     	 OR F_UserName =  #{F_UserName,jdbcType=VARCHAR} 
+     	 OR F_Mobile =  #{F_UserName,jdbcType=VARCHAR} 
+     	 OR F_Password =  #{F_UserName,jdbcType=VARCHAR}     
+          AND F_Deleted = 1
+   </select>
+   
+    <select id="selectByName" parameterType="pd" resultType="pd">
+     select 
+        <include refid="Base_Column_List" />
+     from tb_user  
+     	 where F_Password =  #{F_Password,jdbcType=VARCHAR}    
+     	 AND F_UserName =  #{F_UserName,jdbcType=VARCHAR}  
+     	 AND F_Deleted = 1  
+   </select>
+   
+    <select id="selectByMobile" parameterType="pd" resultType="pd">
+     select 
+        <include refid="Base_Column_List" />
+     from tb_user  
+     	 where F_Password =  #{F_Password,jdbcType=VARCHAR}    
+     	 AND F_Mobile =  #{F_Mobile,jdbcType=VARCHAR}  
+     	 AND F_Deleted = 1  
+   </select>
+   
+    <select id="selectByEmail" parameterType="pd" resultType="pd">
+     select 
+        <include refid="Base_Column_List" />
+     from tb_user  
+     	 where F_Password =  #{F_Password,jdbcType=VARCHAR}    
+     	 AND F_Email =  #{F_Email,jdbcType=VARCHAR}  
+     	 AND F_Deleted = 1  
+   </select>
+   
+   
+   <insert id="insert" parameterType="pd" keyProperty="ID"> 
+      insert into tb_user  
+      <trim prefix="(" suffix=")" suffixOverrides="," >
+      F_USER_ID, 
+      F_UserName,
+      F_Sex,
+      F_Mobile,
+      <if test="F_QQ != null" >
+         F_QQ,
+      </if>
+      <if test="F_OPEN_ID != null" >
+         F_OPEN_ID,
+      </if>
+      <if test="F_NickName != null" >
+         F_NickName,
+      </if>
+      F_Email, 
+      F_Password, 
+      F_Deleted,
+      F_RealPassword,
+      F_Ip
+      </trim> 
+      
+       <trim prefix="values (" suffix=")" suffixOverrides="," >
+      #{F_USER_ID,jdbcType=VARCHAR},
+      #{F_UserName,jdbcType=VARCHAR},
+      #{F_Sex,jdbcType=INTEGER},
+      #{F_Mobile,jdbcType=VARCHAR},
+      <if test="F_QQ != null" >
+           #{F_QQ,jdbcType=VARCHAR},
+      </if>
+      <if test="F_OPEN_ID != null" >
+           #{F_OPEN_ID,jdbcType=VARCHAR},
+      </if>
+       <if test="F_NickName != null" >
+           #{F_NickName,jdbcType=VARCHAR},
+      </if>
+      #{F_Email,jdbcType=VARCHAR},
+      #{F_Password,jdbcType=VARCHAR},
+      #{F_Deleted,jdbcType=INTEGER},
+      #{F_RealPassword,jdbcType=VARCHAR},
+      #{F_Ip,jdbcType=CHAR} 
+       </trim> 
+      	<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="ID">
+	          SELECT LAST_INSERT_ID() AS ID
+	    </selectKey>
+	    
+      <!--  insert into t_user
+       <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="FUserId != null" >
+         F_UserId,
+      </if>
+      <if test="FUserName != null" >
+        F_UserName,
+      </if>
+      <if test="FEmail != null" >
+        F_Email,
+      </if>
+      <if test="FPassword != null" >
+        F_Password,
+      </if>
+      <if test="FDeleted != null" >
+        F_Deleted,
+      </if>
+       </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="FUserId != null" >
+        #{FUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="FUserName != null" >
+        #{FUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="FEmail != null" >
+        #{FEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="FPassword != null" >
+        #{FPassword,jdbcType=VARCHAR},
+      </if>  
+      <if test="FDeleted != null" >
+        #{FDeleted,jdbcType=INTEGER},
+      </if>
+    </trim> -->
+   </insert>
+   
+   	<!-- 通过F_USER_ID获取数据 -->
+	<select id="findUserById" parameterType="java.lang.String" resultType="pd">
+	
+		select 
+			F_USER_ID,	
+			F_UserName,	
+			F_Birthday,	
+			F_NickName,	
+			F_Sex,	
+			F_Hometown,
+			F_Email,
+			F_Mobile,
+			F_RealName,
+			F_QQ
+		from 
+			TB_USER  
+		where 
+			TB_USER.F_USER_ID = #{F_USER_ID} AND F_Deleted = 1
+	</select>
+	
+	
+		<!-- 修改 -->
+	<update id="update" parameterType="pd">
+		update  TB_USER
+			set 
+				F_UserName = #{F_UserName},
+				F_Birthday = #{F_Birthday},
+				<if test="F_NickName != null" >
+				   F_NickName = #{F_NickName},
+				</if>
+				F_Sex = #{F_Sex},
+				F_Hometown = #{F_Hometown},
+				F_Email = #{F_Email},
+				F_Mobile = #{F_Mobile},
+				F_RealName = #{F_RealName},
+			    F_QQ = #{F_QQ},
+			   <if test="F_OPEN_ID != null" >
+			       F_OPEN_ID = #{F_OPEN_ID}
+			    </if>
+			    where 
+				F_USER_ID = #{F_USER_ID}
+	</update>
+	
+	
+</mapper>

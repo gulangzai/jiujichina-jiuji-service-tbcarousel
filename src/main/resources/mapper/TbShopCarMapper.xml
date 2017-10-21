@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TbShopCarMapper">
+	 
+	
+		<!-- 新增-->
+	<insert id="save" parameterType="pd"  keyProperty="F_SHOPCARID" useGeneratedKeys="true">
+		    
+		insert into tb_shopcar ( 
+							      F_USER_ID,  
+							      F_SKU,
+							      F_PRODUCT_ID,
+							      F_NUMBER,  
+							      F_COST,
+							      CREATE_DATE 
+		) values (  
+							       #{F_USER_ID},
+							       #{F_SKU},  
+							       #{F_PRODUCT_ID},   
+							       #{F_NUMBER},
+							       #{F_COST},
+					               #{CREATE_DATE}
+		)
+		
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="F_SHOPCARID">
+	          SELECT LAST_INSERT_ID() AS id
+	    </selectKey>
+	    
+	</insert>
+	 
+	 
+    <!-- datalistPage -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		 select  
+					      a.F_USER_ID,  
+					      a.F_PRODUCT_ID, 
+					      a.F_NUMBER,  
+					      a.F_COST,
+					      (select F_Express from tb_product tp where tp.F_PRODUCT_ID = a.F_PRODUCT_ID) as F_Express,  
+					      (select F_REAL_PRICE from tb_product tp where tp.F_PRODUCT_ID = a.F_PRODUCT_ID) as F_REAL_PRICE,  
+					      (select F_Price from tb_product tp where tp.F_PRODUCT_ID = a.F_PRODUCT_ID) as F_Price, 
+					      (select F_ProductName from tb_product tp where tp.F_PRODUCT_ID = a.F_PRODUCT_ID) as F_ProductName, 
+					      (select F_ProductDesc from tb_product tp where tp.F_PRODUCT_ID = a.F_PRODUCT_ID) as F_ProductDesc,
+					      (select PATH from tb_pictures where TABLE_NAME='TB_PRODUCT' AND TABLE_UID_VALUE=a.F_PRODUCT_ID LIMIT 0,1) as F_PATH, 
+			             date_format(a.CREATE_DATE,'%Y-%c-%d %h:%i:%s') as CREATE_DATE,
+				a.F_SHOPCARID
+		from 
+				tb_shopcar a  
+				  where 
+				   F_USER_ID = #{pd.F_USER_ID, jdbcType=VARCHAR}  
+	</select>
+	
+	 
+	 	<!--findById -->
+	<select id="findById" parameterType="pd" resultType="pd">
+	
+	SELECT
+					      tbShopCar.F_OrderSeries,  
+					      tbShopCar.F_USER_ID,  
+					      tbShopCar.F_PRODUCT_ID,  
+					      tbShopCar.F_SinglePrice,  
+					      tbShopCar.F_BuyCount,  
+					      tbShopCar.F_Cost,  
+					      tbShopCar.F_Message,  
+					      tbShopCar.F_Status,  
+			             date_format(tbShopCar.CREATE_DATE,'%Y-%c-%d %h:%i:%s') as CREATE_DATE,
+				tbShopCar.F_SHOPCARID,
+	(select PATH From tb_pictures tbpictures where tbpictures.TABLE_UID_VALUE = tbShopCar.F_SHOPCARID limit 0,1) AS PATH
+FROM
+	tb_shopcar tbShopCar
+WHERE  F_SHOPCARID = #{F_SHOPCARID}
+	 
+	</select>
+	
+	
+	<!-- �޸� -->
+	<update id="edit" parameterType="pd">
+		update  tb_shopcar
+			set 
+					      F_OrderSeries = #{F_OrderSeries},
+					      F_USER_ID = #{F_USER_ID},
+					      F_PRODUCT_ID = #{F_PRODUCT_ID},
+					      F_SinglePrice = #{F_SinglePrice},
+					      F_BuyCount = #{F_BuyCount},
+					      F_Cost = #{F_Cost},
+					      F_Message = #{F_Message},
+					      F_Status = #{F_Status},
+					      CREATE_DATE = #{CREATE_DATE},
+		        F_SHOPCARID = #{ F_SHOPCARID}
+		     where 
+			    F_SHOPCARID = #{ F_SHOPCARID}
+				 
+	</update>
+	
+    <!-- ɾ��-->
+	<delete id="delete" parameterType="pd">
+		delete from  tb_shopcar
+		where 
+			F_SHOPCARID = #{ F_SHOPCARID}
+	</delete>
+	
+	<delete id="deleteByProductIdAndUserId" parameterType="pd">
+		delete from  tb_shopcar
+		where 
+			F_PRODUCT_ID = #{ F_PRODUCT_ID} AND F_USER_ID = #{F_USER_ID}
+	</delete>
+	
+	
+ 
+	
+</mapper>
