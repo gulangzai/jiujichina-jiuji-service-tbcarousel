@@ -40,6 +40,13 @@
     
      <dependency>
       <groupId>com.jiujichina</groupId>
+      <artifactId>jiujichina-jiuji-vo</artifactId>
+      <version>${jiujichina-jiuji-vo.version}</version> 
+    </dependency>
+    
+    
+     <dependency>
+      <groupId>com.jiujichina</groupId>
       <artifactId>jiujichina-jiuji-facade-tbcarousel</artifactId>
       <version>${jiujichina-jiuji-facade-tbcarousel.version}</version> 
     </dependency>
