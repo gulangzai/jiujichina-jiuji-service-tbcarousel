@@ -38,6 +38,12 @@
       <version>${jiujichina-common-core.version}</version> 
     </dependency>
     
+    <dependency>
+      <groupId>com.jiujichina</groupId>
+      <artifactId>jiujichina-common-activiti</artifactId>
+      <version>${jiujichina-common-activiti.version}</version> 
+    </dependency>
+    
      <dependency>
       <groupId>com.jiujichina</groupId>
       <artifactId>jiujichina-jiuji-vo</artifactId>
